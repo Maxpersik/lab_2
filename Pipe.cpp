@@ -55,3 +55,57 @@ void Pipe::editPipeById(int id) {
         std::cout << "Труба с таким ID не найдена.\n";
     }
 }
+
+void Pipe::pipeSubMenu() {
+    int choice;
+    while (true) {
+        std::cout << "\nМеню Труб:\n";
+        std::cout << "1 - Добавить трубу\n";
+        std::cout << "2 - Поиск труб по названию\n";
+        std::cout << "3 - Поиск труб по признаку «в ремонте»\n";
+        std::cout << "4 - Редактировать трубу\n";
+        std::cout << "0 - Назад в главное меню\n";
+        std::cout << "Выберите команду: ";
+        std::cin >> choice;
+        std::cin.ignore();
+        
+        if (choice == 0) break;
+        
+        switch (choice) {
+            case 1: {
+                addPipe();
+                break;
+            }
+            case 2: {
+                std::string name;
+                std::cout << "Введите название трубы: ";
+                std::getline(std::cin, name);
+                //auto results = findPipesByName(name);
+                //displayPipes(results);
+                break;
+            }
+            case 3: {
+                bool inRepair;
+                std::cout << "Введите 1, если хотите найти трубы в ремонте, 0 - если нет: ";
+                std::cin >> inRepair;
+                //auto results =findPipesByRepairStatus(inRepair);
+                //displayPipes(results);
+                break;
+            }
+            case 4: {
+                int pipeId;
+                std::cout << "Введите ID трубы для редактирования: ";
+                std::cin >> pipeId;
+//                if (editPipe(pipeId)) {
+//                    std::cout << "Труба успешно отредактирована.\n";
+//                } else {
+//                    std::cout << "Труба с таким ID не найдена.\n";
+//                }
+//                break;
+            }
+            default:
+                std::cout << "Неверная команда. Попробуйте снова.\n";
+                break;
+        }
+    }
+}

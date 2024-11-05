@@ -2,13 +2,16 @@
 #include "Pipe.h"
 #include "CS.h"
 #include "DataManager.h"
+#include "Utils.h"
 
 int main() {
     std::unordered_map<int, Pipe> pipes;
     std::unordered_map<int, CompressorStation> stations;
 
-    int choice;
+    std::string command;
+    long value;
     std::string filename = "data.txt";
+    
 
     while (true) {
         std::cout << "\nМеню:\n";
@@ -21,10 +24,11 @@ int main() {
         std::cout << "7 - Загрузить из файла\n";
         std::cout << "0 - Выход\n";
         std::cout << "Выберите команду: ";
-        std::cin >> choice;
-        std::cin.ignore();
+        getline(std::cin, command);
 
-        switch (choice) {
+        value = numberOrDefault(command);
+
+        switch (value) {
             case 1:
                 Pipe::addPipe();
                 break;

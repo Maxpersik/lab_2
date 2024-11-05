@@ -63,6 +63,7 @@ public:
     
     // Метод для редактирования статуса трубы по ID
     static void editPipeById(int id);
+    static void pipeSubMenu();
     friend class DataManager;
 };
 
