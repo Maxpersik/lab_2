@@ -75,9 +75,9 @@ void CompressorStation::readFromConsole() {
     std::cout << "Введите название станции: ";
     std::getline(std::cin, name);
 
-    workshopNumber = inputIntInRange("Введите количество цехов: ", 1, 1000);
-    workshopNumberInWork = inputIntInRange("Введите количество цехов в работе: ", 0, workshopNumber);
-    efficiency = inputIntInRange("Введите эффективность (в %): ", 0.01, 100);
+    workshopNumber = inputInRange<int>("Введите количество цехов: ", 1, 1000);
+    workshopNumberInWork = inputInRange<int>("Введите количество цехов в работе: ", 0, workshopNumber);
+    efficiency = inputInRange<double>("Введите эффективность (в %): ", 0.01, 100);
 }
 
 void CompressorStation::writeToConsole() const {
@@ -93,7 +93,7 @@ void CompressorStation::editWorkshop() {
     std::cout << "1 - Запустить цех" << std::endl;
     std::cout << "2 - Остановить цех" << std::endl;
 
-    command = inputIntInRange("Выберите действие: ", 1, 2);
+    command = inputInRange<int>("Выберите действие: ", 1, 2);
 
     if (command == 1) {
         if (workshopNumber > workshopNumberInWork) {

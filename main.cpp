@@ -4,26 +4,37 @@
 #include "DataManager.h"
 #include "Utils.h"
 
+// Функция для получения пунктов меню без использования внешнего файла
+std::vector<std::string> getMenuOptions = {
+        "Выход",
+        "Добавить трубу",
+        "Добавить компрессорную станцию",
+        "Показать все трубы и станции",
+        "Редактировать трубу",
+        "Редактировать станцию",
+        "Сохранить в файл",
+        "Загрузить из файла"
+    };
+
+
+void displayMenu(const std::vector<std::string>& options) {
+    std::cout << "\nМеню:\n";
+    for (size_t i = 0; i < options.size(); ++i) {
+        std::cout << i << " - " << options[i] << '\n';
+    }
+    std::cout << "Выберите команду: ";
+}
+
 int main() {
     std::unordered_map<int, Pipe> pipes;
     std::unordered_map<int, CompressorStation> stations;
-
     std::string command;
     long value;
     std::string filename = "data.txt";
     
 
     while (true) {
-        std::cout << "\nМеню:\n";
-        std::cout << "1 - Добавить трубу\n";
-        std::cout << "2 - Добавить компрессорную станцию\n";
-        std::cout << "3 - Показать все трубы и станции\n";
-        std::cout << "4 - Редактировать трубу\n";
-        std::cout << "5 - Редактировать станцию\n";
-        std::cout << "6 - Сохранить в файл\n";
-        std::cout << "7 - Загрузить из файла\n";
-        std::cout << "0 - Выход\n";
-        std::cout << "Выберите команду: ";
+        displayMenu(getMenuOptions);
         getline(std::cin, command);
 
         value = numberOrDefault(command);
@@ -43,12 +54,15 @@ int main() {
                 int id;
                 std::cout << "Введите ID трубы для редактирования: ";
                 std::cin >> id;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Очистка буфера
                 Pipe::editPipeById(id);
                 break;
             case 5:
                 int idd;
                 std::cout << "Введите ID станции для редактирования: ";
                 std::cin >> idd;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Очистка буфера
+
                 CompressorStation::editStationById(idd);
                 break;
             case 6:

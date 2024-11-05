@@ -14,8 +14,8 @@ using namespace std;
 
 void log(const string &action);
 long numberOrDefault(const string &input);
-int inputIntInRange(const string &prompt, int minValue, int maxValue);
-double inputDoubleInRange(const string& prompt, double minValue, double maxValue);
+template <typename T>
+T inputInRange(const string &prompt, T minValue, T maxValue);
 bool isNumber(const std::string& s);
 long numberOrDefault(const string& command);
 long numberInRange(const string& prompt, long minValue, long maxValue);

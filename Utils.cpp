@@ -2,32 +2,15 @@
 
 using namespace std;
 
-int inputIntInRange(const string& prompt, int minValue, int maxValue) {
-    int value;
+template <typename T>
+T inputInRange(const string& prompt, T minValue, T maxValue) {
+    T value;
     while (true) {
         cout << prompt;
         string input;
         getline(cin, input);
         stringstream ss(input);
-        if (ss >> value && ss.eof()) {
-            if (value >= minValue && value <= maxValue) {
-                return value;
-            } else {
-                cout << "Ошибка: введите число от " << minValue << " до " << maxValue << "." << endl;
-            }
-        } else {
-            cout << "Ошибка: введите корректное целое число." << endl;
-        }
-    }
-}
 
-double inputDoubleInRange(const string& prompt, double minValue, double maxValue) {
-    double value;
-    while (true) {
-        cout << prompt;
-        string input;
-        getline(cin, input);
-        stringstream ss(input);
         if (ss >> value && ss.eof()) {
             if (value >= minValue && value <= maxValue) {
                 return value;
@@ -39,6 +22,9 @@ double inputDoubleInRange(const string& prompt, double minValue, double maxValue
         }
     }
 }
+
+template int inputInRange<int>(const string& prompt, int minValue, int maxValue);
+template double inputInRange<double>(const string& prompt, double minValue, double maxValue);
 
 bool isNumber(const std::string& s)
 {

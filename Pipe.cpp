@@ -11,8 +11,8 @@ Pipe::Pipe(int id, const std::string& name, double length, double diameter, bool
 void Pipe::readFromConsole() {
     std::cout << "Введите название трубы: ";
     std::getline(std::cin, name);
-    length = inputIntInRange("Введите длину трубы (в км): ", 0.1, 10000);
-    diameter = inputIntInRange("Введите диаметр трубы (в мм): ", 10, 10000);
+    length = inputInRange<int>("Введите длину трубы (в км): ", 0.1, 10000);
+    diameter = inputInRange<int>("Введите диаметр трубы (в мм): ", 10, 10000);
     repairStatus = false;
 }
 
