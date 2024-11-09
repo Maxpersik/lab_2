@@ -18,11 +18,10 @@ std::vector<std::string> getMenuOptions = {
 
 
 int main() {
-    std::unordered_map<int, Pipe> pipes;
-    std::unordered_map<int, CompressorStation> stations;
     std::string command;
     long value;
-    std::string filename = "data.txt";
+    getCurrentDirectory();
+    std::string filename = "/Users/maximgvozdev/Gubkin_main/Gubkin_3_term/Algoritmic languages/Lab2/Lab_2/data.txt";
     //Logger logger("log.txt");
 
     while (true) {
@@ -43,10 +42,10 @@ int main() {
                 Pipe::displayAll();
                 break;
             case 4:
-                DataManager::saveToFile(pipes, stations, filename);
+                DataManager::saveToFile(Pipe::pipes, CompressorStation::stations, filename);
                 break;
             case 5:
-                DataManager::loadFromFile(pipes, stations, filename);
+                DataManager::loadFromFile(Pipe::pipes, CompressorStation::stations, filename);
                 break;
             case 0:
                 std::cout << "Выход из программы.\n";

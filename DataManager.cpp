@@ -1,42 +1,43 @@
-#include "DataManager.h"
-#include <fstream>
 #include <iostream>
-#include "Pipe.h"       
+#include <fstream>
+#include <unordered_map>
+#include "Pipe.h"
 #include "CS.h"
+#include "DataManager.h"
+
 
 void DataManager::saveToFile(const std::unordered_map<int, Pipe>& pipes, const std::unordered_map<int, CompressorStation>& stations, const std::string& filename) {
     std::ofstream outFile(filename);
-    if (!outFile.is_open()) {
-        std::cerr << "Ошибка при открытии файла для записи: " << filename << "\n";
-        return;
-    }
+    if (outFile.is_open()) {
+        // Сохраняем данные труб
+        for (const auto& [id, pipe] : pipes) {
+            if (!pipe.name.empty()) {
+                outFile << "PIPE" << std::endl;
+                outFile << pipe.id << std::endl;
+                outFile << pipe.name << std::endl;
+                outFile << pipe.length << std::endl;
+                outFile << pipe.diameter << std::endl;
+                outFile << (pipe.repairStatus ? "1" : "0") << std::endl;
+            }
+        }
 
-    // Сохранение труб
-    outFile << pipes.size() << "\n";
-    std::cout << "Сохранение труб (" << pipes.size() << " шт.)...\n";
-    for (const auto& [id, pipe] : pipes) {
-        outFile << "PIPE\n";
-        outFile << pipe.id << "\n"
-                << pipe.name << "\n"
-                << pipe.length << "\n"
-                << pipe.diameter << "\n"
-                << pipe.repairStatus << "\n";
-    }
+        // Сохраняем данные компрессорных станций
+        for (const auto& [id, station] : stations) {
+            if (!station.name.empty()) {
+                outFile << "CS" << std::endl;
+                outFile << station.id << std::endl;
+                outFile << station.name << std::endl;
+                outFile << station.workshopNumber << std::endl;
+                outFile << station.workshopNumberInWork << std::endl;
+                outFile << station.efficiency << std::endl;
+            }
+        }
 
-    // Сохранение станций
-    outFile << stations.size() << "\n";
-    std::cout << "Сохранение станций (" << stations.size() << " шт.)...\n";
-    for (const auto& [id, station] : stations) {
-        outFile << "CS\n";
-        outFile << station.id << "\n"
-                << station.name << "\n"
-                << station.workshopNumber << "\n"
-                << station.workshopNumberInWork << "\n"
-                << station.efficiency << "\n";
+        outFile.close();
+        std::cout << "Данные сохранены в файл " << filename << std::endl;
+    } else {
+        std::cerr << "Не удалось открыть файл для записи: " << filename << std::endl;
     }
-
-    outFile.close();
-    std::cout << "Данные успешно сохранены в файл: " << filename << "\n";
 }
 
 void DataManager::loadFromFile(std::unordered_map<int, Pipe>& pipes, std::unordered_map<int, CompressorStation>& stations, const std::string& filename) {

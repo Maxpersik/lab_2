@@ -2,29 +2,16 @@
 
 using namespace std;
 
-//template <typename T>
-//T inputInRange(const string& prompt, T minValue, T maxValue) {
-//    T value;
-//    while (true) {
-//        cout << prompt;
-//        string input;
-//        getline(cin, input);
-//        stringstream ss(input);
-//
-//        if (ss >> value && ss.eof()) {
-//            if (value >= minValue && value <= maxValue) {
-//                return value;
-//            } else {
-//                cout << "Ошибка: введите число от " << minValue << " до " << maxValue << "." << endl;
-//            }
-//        } else {
-//            cout << "Ошибка: введите корректное число." << endl;
-//        }
-//    }
-//}
 
-//template int inputInRange<int>(const string& prompt, int minValue, int maxValue);
-//template double inputInRange<double>(const string& prompt, double minValue, double maxValue);
+std::string getCurrentDirectory() {
+    try {
+        return std::filesystem::current_path().string();
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Ошибка при получении текущей директории: " << e.what() << std::endl;
+        return "";
+    }
+}
+
 
 bool isNumber(const std::string& s)
 {
@@ -38,18 +25,6 @@ long numberOrDefault(const string& command){
     }
     return -1;
 }
-
-//long numberInRange(const string& prompt, long minValue, long maxValue) {
-//    long value;
-//    while (true) {
-//        value = numberOrDefault(prompt);
-//        if (value >= minValue && value <= maxValue) {
-//            return value;
-//        } else {
-//            std::cout << "Ошибка: введите число от " << minValue << " до " << maxValue << ". Попробуйте снова." << std::endl;
-//        }
-//    }
-//}
 
 void displayMenu(const std::vector<std::string>& options) {
     std::cout << "\nМеню:\n";

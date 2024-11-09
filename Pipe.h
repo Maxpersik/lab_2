@@ -15,10 +15,13 @@ private:
     double diameter = 0;
     bool repairStatus = false;
 
-    static int nextId;
-    static std::unordered_map<int, Pipe> pipes;
+//    static int nextId;
+//    static std::unordered_map<int, Pipe> pipes;
 
 public:
+    static int nextId;
+    static std::unordered_map<int, Pipe> pipes;
+    
     Pipe() = default;
     Pipe(int id, const std::string& name, double length, double diameter, bool repairStatus);
     

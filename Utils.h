@@ -59,6 +59,7 @@
 #include <vector>
 
 // Function declarations
+std::string getCurrentDirectory();
 long numberOrDefault(const std::string& input);
 bool isNumber(const std::string& s);
 //long numberInRange(const std::string& prompt, long minValue, long maxValue);

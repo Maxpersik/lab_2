@@ -15,10 +15,13 @@ private:
     int workshopNumberInWork;
     double efficiency;
 
-    static int nextId;
-    static std::unordered_map<int, CompressorStation> stations;
+//    static int nextId;
+//    static std::unordered_map<int, CompressorStation> stations;
 
 public:
+    static int nextId;
+    static std::unordered_map<int, CompressorStation> stations;
+    
     CompressorStation() = default;
     CompressorStation(int id, const std::string& name, int workshopNumber, int workshopNumberInWork, double efficiency);
     
