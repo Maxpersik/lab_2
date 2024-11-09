@@ -2,6 +2,16 @@
 #include <iostream>
 #include "Utils.h"
 
+std::vector<std::string> getMenuOptionsPipe = {
+        "Выход",
+        "Показать все трубы",
+        "Добавить трубу",
+        "Редактировать трубу",
+        "Удалить трубу",
+        "Поиск труб",
+        "Пакетное редактирование"
+    };
+
 int Pipe::nextId = 1;
 std::unordered_map<int, Pipe> Pipe::pipes;
 
@@ -47,61 +57,183 @@ void Pipe::displayAll() {
     }
 }
 
-void Pipe::editPipeById(int id) {
-    auto it = pipes.find(id);
+void Pipe::editPipeById() {
+    int pipeId;
+    std::cout << "Введите ID трубы для редактирования: ";
+    std::cin >> pipeId;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Очистка буфера
+
+    auto it = pipes.find(pipeId);
     if (it != pipes.end()) {
-        it->second.editRepairStatus();
+        it->second.editRepairStatus();  // Редактируем статус (или другое действие)
+        std::cout << "Труба с ID " << pipeId << " успешно отредактирована.\n";
     } else {
         std::cout << "Труба с таким ID не найдена.\n";
     }
 }
 
-void Pipe::pipeSubMenu() {
-    int choice;
+void Pipe::displayPipes(const std::vector<Pipe>& pipes) {
+    if (pipes.empty()) {
+        std::cout << "Нет труб, соответствующих критерию поиска.\n";
+    } else {
+        for (const auto& pipe : pipes) {
+            pipe.writeToConsole();
+        }
+    }
+}
+
+std::vector<Pipe> Pipe::findPipes() {
+    int command;
+    std::cout << "Выберите критерий поиска:\n";
+    std::cout << "1 - Поиск по названию\n";
+    std::cout << "2 - Поиск по статусу ремонта\n";
+    
+    command = inputInRange<int>("Введите номер критерия: ", 1, 2);
+
+    std::vector<Pipe> results;
+    if (command == 1) {
+        // Поиск по названию
+        std::string name;
+        std::cout << "Введите название трубы: ";
+        std::getline(std::cin, name);
+        for (const auto& [id, pipe] : pipes) {
+            if (pipe.name == name) {
+                results.push_back(pipe);
+            }
+        }
+    } else if (command == 2) {
+        // Поиск по статусу ремонта
+        bool inRepair;
+        std::cout << "Введите 1, если хотите найти трубы в ремонте, 0 - если нет: ";
+        std::cin >> inRepair;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        for (const auto& [id, pipe] : pipes) {
+            if (pipe.repairStatus == inRepair) {
+                results.push_back(pipe);
+            }
+        }
+    }
+
+    // Показать результаты поиска
+    displayPipes(results);
+    return results;
+}
+
+void Pipe::deletePipeMenu() {
+    int pipeId;
+    std::cout << "Введите ID трубы для удаления: ";
+    std::cin >> pipeId;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    auto it = pipes.find(pipeId);  // Ищем трубу по ID
+    if (it != pipes.end()) {
+        pipes.erase(it);  // Удаляем трубу, если найдена
+        std::cout << "Труба с ID " << pipeId << " успешно удалена.\n";
+    } else {
+        std::cout << "Труба с таким ID не найдена.\n";
+    }
+}
+
+void Pipe::selectPipesForBatchEditOrDelete() {
+    if (pipes.empty()) {
+        std::cout << "Нет доступных труб для выбора.\n";
+        return;
+    }
+
+    std::cout << "Существующие трубы:\n";
+    for (const auto& [id, pipe] : pipes) {
+        std::cout << "ID: " << id << " - ";
+        pipe.writeToConsole();
+    }
+
+    std::cout << "Введите ID труб, которые хотите выбрать для редактирования или удаления, через пробел: ";
+    std::string input;
+    std::getline(std::cin, input);
+    std::stringstream ss(input);
+    std::vector<int> selectedIds;
+    int id;
+
+    // Чтение введенных ID и проверка их существования
+    while (ss >> id) {
+        if (pipes.find(id) != pipes.end()) {
+            selectedIds.push_back(id);
+        } else {
+            std::cout << "Труба с ID " << id << " не найдена.\n";
+        }
+    }
+
+    // Если выбранные ID найдены, формируем список труб
+    std::vector<Pipe> selectedPipes;
+    for (int id : selectedIds) {
+        selectedPipes.push_back(pipes[id]);
+    }
+
+    if (!selectedPipes.empty()) {
+        batchEditOrDeleteMenu(selectedPipes);  // Переходим к редактированию или удалению выбранных труб
+    } else {
+        std::cout << "Ни одной трубы не выбрано для обработки.\n";
+    }
+}
+
+void Pipe::batchEditOrDeleteMenu(const std::vector<Pipe>& pipesToEdit) {
+    if (pipesToEdit.empty()) {
+        std::cout << "Нет труб для редактирования или удаления.\n";
+        return;
+    }
+
+    std::cout << "Выберите действие:\n";
+    std::cout << "1 - Редактировать все выбранные трубы\n";
+    std::cout << "2 - Удалить все выбранные трубы\n";
+
+    int choice = inputInRange<int>("Введите номер действия: ", 1, 2);
+
+    if (choice == 1) {
+        for (auto& pipe : pipesToEdit) {
+            pipes[pipe.getId()].editRepairStatus();  // Редактируем статус (или другое действие)
+        }
+        std::cout << "Все выбранные трубы успешно отредактированы.\n";
+    } else if (choice == 2) {
+        for (const auto& pipe : pipesToEdit) {
+            pipes.erase(pipe.getId());  // Удаляем по ID
+        }
+        std::cout << "Все выбранные трубы успешно удалены.\n";
+    }
+}
+
+int Pipe::pipeSubMenu() {
+    std::string command;
+    long value;
     while (true) {
-        std::cout << "\nМеню Труб:\n";
-        std::cout << "1 - Добавить трубу\n";
-        std::cout << "2 - Поиск труб по названию\n";
-        std::cout << "3 - Поиск труб по признаку «в ремонте»\n";
-        std::cout << "4 - Редактировать трубу\n";
-        std::cout << "0 - Назад в главное меню\n";
-        std::cout << "Выберите команду: ";
-        std::cin >> choice;
-        std::cin.ignore();
-        
-        if (choice == 0) break;
-        
-        switch (choice) {
-            case 1: {
+        displayMenu(getMenuOptionsPipe);
+        getline(std::cin, command);
+
+        value = numberOrDefault(command);
+
+        switch (value) {
+            case 1:
+                displayAll();
+                break;
+            case 2:
                 addPipe();
                 break;
-            }
-            case 2: {
-                std::string name;
-                std::cout << "Введите название трубы: ";
-                std::getline(std::cin, name);
-                //auto results = findPipesByName(name);
-                //displayPipes(results);
-                break;
-            }
             case 3: {
-                bool inRepair;
-                std::cout << "Введите 1, если хотите найти трубы в ремонте, 0 - если нет: ";
-                std::cin >> inRepair;
-                //auto results =findPipesByRepairStatus(inRepair);
-                //displayPipes(results);
+                editPipeById();
                 break;
             }
             case 4: {
-                int pipeId;
-                std::cout << "Введите ID трубы для редактирования: ";
-                std::cin >> pipeId;
-//                if (editPipe(pipeId)) {
-//                    std::cout << "Труба успешно отредактирована.\n";
-//                } else {
-//                    std::cout << "Труба с таким ID не найдена.\n";
-//                }
-//                break;
+                deletePipeMenu();
+                break;
+            }
+            case 5: {
+                findPipes();
+                break;
+            }
+            case 6: {
+                selectPipesForBatchEditOrDelete();
+                break;
+            case 0:
+                std::cout << "Выход из программы.\n";
+                return 0;
             }
             default:
                 std::cout << "Неверная команда. Попробуйте снова.\n";

@@ -1,66 +1,3 @@
-//#include "CS.h"
-//#include "Utils.h"
-//#include <vector>
-//#include <iostream>
-//#include <map>
-//
-//extern std::map<int, CompressorStation> S;
-//using namespace std;
-//
-//
-//void CompressorStation::readFromConsole() {
-//        cout << "Введите название станции: ";
-//        getline(cin, name);
-//        
-//        workshopNumber = inputIntInRange("Введите количество цехов: ", 1, 1000);
-//        workshopNumberInWork = inputIntInRange("Введите количество цехов в работе: ", 0, workshopNumber);
-//        efficiency = inputIntInRange("Введите эффективность (в %): ", 0.01, 100);
-//    }
-//    
-//void CompressorStation::writeToConsole() {
-//    if (name.empty()) {
-//        cout << "КС не создана" << endl << endl;
-//    }
-//    else {
-//        cout << "Название станции: " << name << endl;
-//        cout << "Количество цехов:" << workshopNumber << endl;
-//        cout << "Количество цехов в работе: " << workshopNumberInWork << endl;
-//        cout << "Эффективность(в %)" << efficiency << endl << endl;
-//    }
-//}
-//    
-//void CompressorStation::editWorkshop() {
-//    int command;
-//    cout << " 1 - Запустить цех  " << endl;
-//    cout << " 2 - Остановить цех " << endl;
-//
-//    command = inputIntInRange("Выберете действие:", 1, 2);
-//    
-//    switch (command) {
-//        case 1:
-//            if (workshopNumber > workshopNumberInWork) {
-//                workshopNumberInWork++;
-//                cout << "Еще один цех запущен" << endl;
-//                cout << "Теперь в работе " << workshopNumberInWork << " из " << workshopNumber << " цехов " << endl;
-//            }
-//            else {
-//                cout << "Все цехи запущены" << endl;
-//            }
-//            break;
-//        case 2:
-//            if (0 < workshopNumberInWork) {
-//                workshopNumberInWork--;
-//                cout << "Цех остановлен" << endl;
-//                cout << "Теперь в работе " << workshopNumberInWork << " из " << workshopNumber << " цехов" << endl;
-//            }
-//            else {
-//                cout << "Все цехи остановлены" << endl;
-//            }
-//            break;
-//        default: // -1
-//            cout << "Неверный выбор, попробуйте снова." << endl;
-//    }
-//}
 #include "CS.h"
 #include <iostream>
 #include "Utils.h"
@@ -134,5 +71,193 @@ void CompressorStation::editStationById(int id) {
         it->second.editWorkshop();
     } else {
         std::cout << "Станция с таким ID не найдена.\n";
+    }
+}
+
+void CompressorStation::addNewStation() {
+    CompressorStation station;
+    station.setId(nextId++);
+    station.readFromConsole();
+    stations[station.getId()] = station;
+    std::cout << "Станция успешно добавлена.\n";
+}
+
+void CompressorStation::editStation() {
+    int stationId;
+    std::cout << "Введите ID станции для редактирования: ";
+    std::cin >> stationId;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    auto it = stations.find(stationId);
+    if (it != stations.end()) {
+        it->second.editWorkshop();
+        std::cout << "Станция с ID " << stationId << " успешно отредактирована.\n";
+    } else {
+        std::cout << "Станция с таким ID не найдена.\n";
+    }
+}
+
+void CompressorStation::deleteStation() {
+    int stationId;
+    std::cout << "Введите ID станции для удаления: ";
+    std::cin >> stationId;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    if (stations.erase(stationId)) {
+        std::cout << "Станция с ID " << stationId << " успешно удалена.\n";
+    } else {
+        std::cout << "Станция с таким ID не найдена.\n";
+    }
+}
+
+void CompressorStation::displayStations(const std::vector<CompressorStation>& stationsToDisplay) {
+    if (stationsToDisplay.empty()) {
+        std::cout << "Нет станций, соответствующих критерию поиска.\n";
+    } else {
+        for (const auto& station : stationsToDisplay) {
+            station.writeToConsole();
+        }
+    }
+}
+
+void CompressorStation::searchStationsByUnusedWorkshopPercentage() {
+    double unusedPercentage;
+    std::cout << "Введите процент незадействованных цехов для поиска: ";
+    std::cin >> unusedPercentage;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    auto results = findStationsByUnusedWorkshopPercentage(unusedPercentage);
+    displayStations(results);
+}
+
+// Поиск по названию
+std::vector<CompressorStation> CompressorStation::findStationsByName(const std::string& name) {
+    std::vector<CompressorStation> results;
+    for (const auto& [id, station] : stations) {
+        if (station.name == name) {
+            results.push_back(station);
+        }
+    }
+    return results;
+}
+
+// Поиск по проценту незадействованных цехов
+std::vector<CompressorStation> CompressorStation::findStationsByUnusedWorkshopPercentage(double unusedPercentage) {
+    std::vector<CompressorStation> results;
+    for (const auto& [id, station] : stations) {
+        double actualUnusedPercentage = 100.0 * (station.workshopNumber - station.workshopNumberInWork) / station.workshopNumber;
+        if (actualUnusedPercentage == unusedPercentage) {
+            results.push_back(station);
+        }
+    }
+    return results;
+}
+
+void CompressorStation::searchStationsMenu() {
+    std::cout << "Выберите критерий поиска:\n";
+    std::cout << "1 - Поиск по названию\n";
+    std::cout << "2 - Поиск по проценту незадействованных цехов\n";
+    int choice = inputInRange<int>("Введите номер действия: ", 1, 2);
+
+    if (choice == 1) {
+        std::string name;
+        std::cout << "Введите название станции для поиска: ";
+        std::getline(std::cin, name);
+        auto results = findStationsByName(name);
+        displayStations(results);
+    } else if (choice == 2) {
+        double unusedPercentage;
+        std::cout << "Введите процент незадействованных цехов для поиска: ";
+        std::cin >> unusedPercentage;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        auto results = findStationsByUnusedWorkshopPercentage(unusedPercentage);
+        displayStations(results);
+    }
+}
+
+void CompressorStation::batchEditOrDeleteMenu() {
+    if (stations.empty()) {
+        std::cout << "Нет доступных станций для пакетного редактирования.\n";
+        return;
+    }
+
+    std::cout << "Введите ID станций, которые хотите выбрать для пакетного редактирования, через пробел: ";
+    std::string input;
+    std::getline(std::cin, input);
+    std::stringstream ss(input);
+    std::vector<int> selectedIds;
+    int id;
+
+    while (ss >> id) {
+        if (stations.find(id) != stations.end()) {
+            selectedIds.push_back(id);
+        } else {
+            std::cout << "Станция с ID " << id << " не найдена.\n";
+        }
+    }
+
+    std::cout << "Выберите действие:\n";
+    std::cout << "1 - Редактировать выбранные станции\n";
+    std::cout << "2 - Удалить выбранные станции\n";
+    int choice = inputInRange<int>("Введите номер действия: ", 1, 2);
+
+    if (choice == 1) {
+        for (int stationId : selectedIds) {
+            stations[stationId].editWorkshop();  // Выполняем редактирование
+        }
+        std::cout << "Выбранные станции успешно отредактированы.\n";
+    } else if (choice == 2) {
+        for (int stationId : selectedIds) {
+            stations.erase(stationId);  // Выполняем удаление
+        }
+        std::cout << "Выбранные станции успешно удалены.\n";
+    }
+}
+
+void CompressorStation::stationSubMenu() {
+    std::vector<std::string> getMenuOptionsCS = {
+        "Выход",
+        "Показать все станции",
+        "Добавить станцию",
+        "Редактировать станцию",
+        "Удалить станцию",
+        "Поиск станций",
+        "Пакетное редактирование"
+    };
+
+    std::string command;
+    long value;
+
+    while (true) {
+        displayMenu(getMenuOptionsCS);
+        std::getline(std::cin, command);
+        value = numberOrDefault(command);
+
+        switch (value) {
+            case 1:
+                displayAll();
+                break;
+            case 2:
+                addNewStation();
+                break;
+            case 3:
+                editStation();
+                break;
+            case 4:
+                deleteStation();
+                break;
+            case 5:
+                searchStationsMenu();
+                break;
+            case 6:
+                batchEditOrDeleteMenu();
+                break;
+            case 0:
+                std::cout << "Выход из меню работы со станциями.\n";
+                return;
+            default:
+                std::cout << "Неверный выбор. Попробуйте снова.\n";
+                break;
+        }
     }
 }

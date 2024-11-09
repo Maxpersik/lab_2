@@ -22,12 +22,8 @@ public:
         }
     }
     void log(const string &action) {
-        ofstream logFile("logging.txt", ios::app);
         if (logFile.is_open()) {
-            time_t N = time(0);
-            char *dt = ctime(&N);
-            logFile << dt << " -- " << action << endl;
-            logFile.close();
+            logFile << getCurrentTime() << " -- " << action << endl;
         } else {
             cerr << "Не удалось открыть файл логирования!" << endl;
         }

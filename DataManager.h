@@ -8,10 +8,7 @@
 
 class DataManager {
 public:
-    // Сохранение данных труб и компрессорных станций в файл
     static void saveToFile(const std::unordered_map<int, Pipe>& pipes, const std::unordered_map<int, CompressorStation>& stations, const std::string& filename);
-
-    // Загрузка данных труб и компрессорных станций из файла
     static void loadFromFile(std::unordered_map<int, Pipe>& pipes, std::unordered_map<int, CompressorStation>& stations, const std::string& filename);
 };
 

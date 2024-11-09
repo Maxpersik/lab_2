@@ -3,27 +3,19 @@
 #include "CS.h"
 #include "DataManager.h"
 #include "Utils.h"
+#include "Logger.h"
+
 
 // Функция для получения пунктов меню без использования внешнего файла
 std::vector<std::string> getMenuOptions = {
         "Выход",
-        "Добавить трубу",
-        "Добавить компрессорную станцию",
+        "Меню трубы",
+        "Меню станции",
         "Показать все трубы и станции",
-        "Редактировать трубу",
-        "Редактировать станцию",
         "Сохранить в файл",
         "Загрузить из файла"
     };
 
-
-void displayMenu(const std::vector<std::string>& options) {
-    std::cout << "\nМеню:\n";
-    for (size_t i = 0; i < options.size(); ++i) {
-        std::cout << i << " - " << options[i] << '\n';
-    }
-    std::cout << "Выберите команду: ";
-}
 
 int main() {
     std::unordered_map<int, Pipe> pipes;
@@ -31,7 +23,7 @@ int main() {
     std::string command;
     long value;
     std::string filename = "data.txt";
-    
+    //Logger logger("log.txt");
 
     while (true) {
         displayMenu(getMenuOptions);
@@ -41,34 +33,19 @@ int main() {
 
         switch (value) {
             case 1:
-                Pipe::addPipe();
+                Pipe::pipeSubMenu();
                 break;
             case 2:
-                CompressorStation::addStation();
+                CompressorStation::stationSubMenu();
                 break;
             case 3:
                 CompressorStation::displayAll();
                 Pipe::displayAll();
                 break;
             case 4:
-                int id;
-                std::cout << "Введите ID трубы для редактирования: ";
-                std::cin >> id;
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Очистка буфера
-                Pipe::editPipeById(id);
-                break;
-            case 5:
-                int idd;
-                std::cout << "Введите ID станции для редактирования: ";
-                std::cin >> idd;
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Очистка буфера
-
-                CompressorStation::editStationById(idd);
-                break;
-            case 6:
                 DataManager::saveToFile(pipes, stations, filename);
                 break;
-            case 7:
+            case 5:
                 DataManager::loadFromFile(pipes, stations, filename);
                 break;
             case 0:

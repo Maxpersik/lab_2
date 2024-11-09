@@ -5,6 +5,8 @@
 #include <string>
 #include <unordered_map>
 
+class DataManager;
+
 class CompressorStation {
 private:
     int id;
@@ -20,6 +22,8 @@ public:
     CompressorStation() = default;
     CompressorStation(int id, const std::string& name, int workshopNumber, int workshopNumberInWork, double efficiency);
     
+    friend class DataManager;
+    
     void readFromConsole();
     void writeToConsole() const;
     void editWorkshop();
@@ -32,7 +36,19 @@ public:
     
     // Метод для редактирования станции по ID
     static void editStationById(int id);
-    friend class DataManager;
+    static std::vector<CompressorStation> findStationsByUnusedWorkshopPercentage(double unusedPercentage);
+    static std::vector<CompressorStation> findStationsByName(const std::string& name);
+    static void displayStations(const std::vector<CompressorStation>& stationsToDisplay);
+    static void searchStationsByUnusedWorkshopPercentage();
+    static void addNewStation();
+    static void editStation();
+    static void deleteStation();
+    static void searchStationsMenu();
+    static void batchEditOrDeleteMenu();
+
+    // Меню для работы со станциями
+    static void stationSubMenu();
+    
 };
 
 #endif // CS_H
