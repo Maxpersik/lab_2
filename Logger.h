@@ -6,6 +6,7 @@
 #include <string>
 #include <ctime>
 #include <sstream>
+#include <mutex>  // Для std::mutex
 
 class Logger {
 public:
@@ -20,9 +21,12 @@ public:
 
 private:
     std::ofstream logFile;
+    std::mutex logMutex;  // Мьютекс для синхронизации записи
 
     // Метод для получения текущего времени в формате строки
     std::string getCurrentTime();
 };
+
+extern Logger logger;
 
 #endif // LOGGER_H

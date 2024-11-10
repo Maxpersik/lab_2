@@ -25,6 +25,9 @@ public:
     Pipe() = default;
     Pipe(int id, const std::string& name, double length, double diameter, bool repairStatus);
     
+    friend std::ostream& operator<<(std::ostream& out, const Pipe& pipe);
+    
+    static void printPipeInfo(std::ostream& out);
     friend class DataManager;
 
     void readFromConsole();

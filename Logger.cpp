@@ -1,42 +1,40 @@
+#include "Logger.h"
 #include <iostream>
-#include <fstream>
-#include <string>
+#include <iomanip>
 #include <ctime>
 #include <sstream>
 
-using namespace std;
+Logger logger("log.txt");
 
-class Logger {
-public:
-    // Конструктор с указанием файла для логирования
-    Logger(const std::string &filename) : logFile(filename, std::ios::app) {
-        if (!logFile.is_open()) {
-            std::cerr << "Не удалось открыть файл логирования!" << std::endl;
-        }
+Logger::Logger(const std::string &filename)
+    : logFile(filename, std::ios::app | std::ios::out) {
+    if (!logFile.is_open()) {
+        std::cerr << "Не удалось открыть файл логирования: " << filename << std::endl;
     }
-    
-    // Деструктор закрывает файл, если он открыт
-    ~Logger() {
-        if (logFile.is_open()) {
-            logFile.close();
-        }
-    }
-    void log(const string &action) {
-        if (logFile.is_open()) {
-            logFile << getCurrentTime() << " -- " << action << endl;
-        } else {
-            cerr << "Не удалось открыть файл логирования!" << endl;
-        }
-    }
-    
-private:
-    std::ofstream logFile;
+}
 
-    // Метод для получения текущего времени в формате строки
-    std::string getCurrentTime() {
-        time_t now = time(0);
-        char buf[80];
-        strftime(buf, sizeof(buf), "%d-%m-%Y %H:%M:%S", localtime(&now));
-        return std::string(buf);
+Logger::~Logger() {
+    if (logFile.is_open()) {
+        logFile.close();
     }
-};
+}
+
+void Logger::log(const std::string &action) {
+    std::lock_guard<std::mutex> guard((logMutex));  // Защита многопоточности
+    if (logFile.is_open()) {
+        logFile << getCurrentTime() << " -- " << action << std::endl;
+    } else {
+        std::cerr << "Ошибка: файл логирования не открыт!" << std::endl;
+    }
+}
+
+std::string Logger::getCurrentTime() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+    std::tm localTime;
+    localtime_r(&nowTime, &localTime);  // Безопасный вызов для многопоточности
+
+    std::ostringstream oss;
+    oss << std::put_time(&localTime, "%Y-%m-%d %H:%M:%S");  // Формат ISO 8601
+    return oss.str();
+}

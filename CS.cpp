@@ -1,12 +1,17 @@
 #include "CS.h"
 #include <iostream>
 #include "Utils.h"
+#include "Logger.h"
+
 
 int CompressorStation::nextId = 1;
 std::unordered_map<int, CompressorStation> CompressorStation::stations;
 
 CompressorStation::CompressorStation(int id, const std::string& name, int workshopNumber, int workshopNumberInWork, double efficiency)
-    : id(id), name(name), workshopNumber(workshopNumber), workshopNumberInWork(workshopNumberInWork), efficiency(efficiency) {}
+    : id(id), name(name), workshopNumber(workshopNumber), workshopNumberInWork(workshopNumberInWork), efficiency(efficiency) {
+        logger.log("Создан объект CompressorStation с ID: " + std::to_string(id));
+
+    }
 
 void CompressorStation::readFromConsole() {
     std::cout << "Введите название станции: ";
@@ -15,9 +20,11 @@ void CompressorStation::readFromConsole() {
     workshopNumber = inputInRange<int>("Введите количество цехов: ", 1, 1000);
     workshopNumberInWork = inputInRange<int>("Введите количество цехов в работе: ", 0, workshopNumber);
     efficiency = inputInRange<double>("Введите эффективность (в %): ", 0.01, 100);
+    logger.log("Ввод данных для CompressorStation завершен.");
 }
 
 void CompressorStation::writeToConsole() const {
+    logger.log("Вывод информации о CompressorStation с ID: " + std::to_string(id));
     std::cout << "\nID станции: " << id << std::endl;
     std::cout << "Название станции: " << name << std::endl;
     std::cout << "Количество цехов: " << workshopNumber << std::endl;
@@ -34,16 +41,20 @@ void CompressorStation::editWorkshop() {
 
     if (command == 1) {
         if (workshopNumber > workshopNumberInWork) {
+            logger.log("Запущен еще один цех в CompressorStation с ID: " + std::to_string(id));
             workshopNumberInWork++;
             std::cout << "Еще один цех запущен. Теперь в работе " << workshopNumberInWork << " из " << workshopNumber << " цехов.\n";
         } else {
+            logger.log("Все цехи уже запущены в CompressorStation с ID: " + std::to_string(id));
             std::cout << "Все цехи уже запущены.\n";
         }
     } else if (command == 2) {
         if (workshopNumberInWork > 0) {
+            logger.log("Остановлен один цех в CompressorStation с ID: " + std::to_string(id));
             workshopNumberInWork--;
             std::cout << "Один цех остановлен. Теперь в работе " << workshopNumberInWork << " из " << workshopNumber << " цехов.\n";
         } else {
+            logger.log("Все цехи уже остановлены в CompressorStation с ID: " + std::to_string(id));
             std::cout << "Все цехи уже остановлены.\n";
         }
     } else {
@@ -56,9 +67,12 @@ void CompressorStation::addStation() {
     station.setId(nextId++);
     station.readFromConsole();
     stations[station.getId()] = station;
+    logger.log("Добавлена новая CompressorStation с ID: " + std::to_string(station.getId()));
+
 }
 
 void CompressorStation::displayAll() {
+    logger.log("Вывод всех компрессорных станций.");
     std::cout << "\n--- Показать все компрессорные станции ---\n";
     for (const auto& [id, station] : stations) {
         station.writeToConsole();
@@ -69,8 +83,12 @@ void CompressorStation::editStationById(int id) {
     auto it = stations.find(id);
     if (it != stations.end()) {
         it->second.editWorkshop();
+        logger.log("Редактирование завершено для CompressorStation с ID: " + std::to_string(id));
+
     } else {
         std::cout << "Станция с таким ID не найдена.\n";
+        logger.log("Ошибка: не найдена CompressorStation с ID: " + std::to_string(id));
+
     }
 }
 
@@ -80,6 +98,7 @@ void CompressorStation::addNewStation() {
     station.readFromConsole();
     stations[station.getId()] = station;
     std::cout << "Станция успешно добавлена.\n";
+    logger.log("Добавлена новая станция с ID: " + std::to_string(station.getId()));
 }
 
 void CompressorStation::editStation() {
@@ -90,9 +109,11 @@ void CompressorStation::editStation() {
 
     auto it = stations.find(stationId);
     if (it != stations.end()) {
+        logger.log("Станция с ID " + std::to_string(stationId) + " успешно отредактирована.");
         it->second.editWorkshop();
         std::cout << "Станция с ID " << stationId << " успешно отредактирована.\n";
     } else {
+        logger.log("Ошибка: Станция с ID " + std::to_string(stationId) + " не найдена.");
         std::cout << "Станция с таким ID не найдена.\n";
     }
 }
@@ -104,13 +125,16 @@ void CompressorStation::deleteStation() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     if (stations.erase(stationId)) {
+        logger.log("Станция с ID " + std::to_string(stationId) + " успешно удалена.");
         std::cout << "Станция с ID " << stationId << " успешно удалена.\n";
     } else {
+        logger.log("Ошибка: Станция с ID " + std::to_string(stationId) + " не найдена.");
         std::cout << "Станция с таким ID не найдена.\n";
     }
 }
 
 void CompressorStation::displayStations(const std::vector<CompressorStation>& stationsToDisplay) {
+    logger.log("Отображение станций по критерию поиска.");
     if (stationsToDisplay.empty()) {
         std::cout << "Нет станций, соответствующих критерию поиска.\n";
     } else {
@@ -127,6 +151,7 @@ void CompressorStation::searchStationsByUnusedWorkshopPercentage() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     auto results = findStationsByUnusedWorkshopPercentage(unusedPercentage);
+    logger.log("Поиск станций по проценту незадействованных цехов: " + std::to_string(unusedPercentage) + "%.");
     displayStations(results);
 }
 
@@ -154,6 +179,7 @@ std::vector<CompressorStation> CompressorStation::findStationsByUnusedWorkshopPe
 }
 
 void CompressorStation::searchStationsMenu() {
+    logger.log("Вход в меню поиска станций.");
     std::cout << "Выберите критерий поиска:\n";
     std::cout << "1 - Поиск по названию\n";
     std::cout << "2 - Поиск по проценту незадействованных цехов\n";
@@ -176,6 +202,7 @@ void CompressorStation::searchStationsMenu() {
 }
 
 void CompressorStation::batchEditOrDeleteMenu() {
+    logger.log("Вход в меню пакетного редактирования/удаления станций.");
     if (stations.empty()) {
         std::cout << "Нет доступных станций для пакетного редактирования.\n";
         return;
@@ -192,6 +219,7 @@ void CompressorStation::batchEditOrDeleteMenu() {
         if (stations.find(id) != stations.end()) {
             selectedIds.push_back(id);
         } else {
+            logger.log("Ошибка: Станция с ID " + std::to_string(id) + " не найдена.");
             std::cout << "Станция с ID " << id << " не найдена.\n";
         }
     }
@@ -205,11 +233,13 @@ void CompressorStation::batchEditOrDeleteMenu() {
         for (int stationId : selectedIds) {
             stations[stationId].editWorkshop();  // Выполняем редактирование
         }
+        logger.log("Выбранные станции успешно отредактированы.");
         std::cout << "Выбранные станции успешно отредактированы.\n";
     } else if (choice == 2) {
         for (int stationId : selectedIds) {
             stations.erase(stationId);  // Выполняем удаление
         }
+        logger.log("Выбранные станции успешно удалены.");
         std::cout << "Выбранные станции успешно удалены.\n";
     }
 }
@@ -227,7 +257,8 @@ void CompressorStation::stationSubMenu() {
 
     std::string command;
     long value;
-
+    
+    logger.log("Вход в подменю станций.");
     while (true) {
         displayMenu(getMenuOptionsCS);
         std::getline(std::cin, command);
@@ -253,9 +284,11 @@ void CompressorStation::stationSubMenu() {
                 batchEditOrDeleteMenu();
                 break;
             case 0:
+                logger.log("Выход из подменю станций.");
                 std::cout << "Выход из меню работы со станциями.\n";
                 return;
             default:
+                logger.log("Ошибка: Неверный выбор в меню станций.");
                 std::cout << "Неверный выбор. Попробуйте снова.\n";
                 break;
         }

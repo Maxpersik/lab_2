@@ -5,24 +5,20 @@
 #include "Utils.h"
 #include "Logger.h"
 
-
-// Функция для получения пунктов меню без использования внешнего файла
 std::vector<std::string> getMenuOptions = {
-        "Выход",
-        "Меню трубы",
-        "Меню станции",
-        "Показать все трубы и станции",
-        "Сохранить в файл",
-        "Загрузить из файла"
-    };
-
+    "Выход",
+    "Меню трубы",
+    "Меню станции",
+    "Показать все трубы и станции",
+    "Сохранить в файл",
+    "Загрузить из файла"
+};
 
 int main() {
     std::string command;
     long value;
-    getCurrentDirectory();
     std::string filename = "/Users/maximgvozdev/Gubkin_main/Gubkin_3_term/Algoritmic languages/Lab2/Lab_2/data.txt";
-    //Logger logger("log.txt");
+    Logger logger("/Users/maximgvozdev/Gubkin_main/Gubkin_3_term/Algoritmic languages/Lab2/Lab_2/log.txt");
 
     while (true) {
         displayMenu(getMenuOptions);
@@ -32,25 +28,32 @@ int main() {
 
         switch (value) {
             case 1:
+                logger.log("Вход в меню трубы.");
                 Pipe::pipeSubMenu();
                 break;
             case 2:
+                logger.log("Вход в меню станции.");
                 CompressorStation::stationSubMenu();
                 break;
             case 3:
+                logger.log("Показ всех труб и станций.");
                 CompressorStation::displayAll();
                 Pipe::displayAll();
                 break;
             case 4:
+                logger.log("Сохранение данных в файл: " + filename);
                 DataManager::saveToFile(Pipe::pipes, CompressorStation::stations, filename);
                 break;
             case 5:
+                logger.log("Загрузка данных из файла: " + filename);
                 DataManager::loadFromFile(Pipe::pipes, CompressorStation::stations, filename);
                 break;
             case 0:
+                logger.log("Программа завершена.");
                 std::cout << "Выход из программы.\n";
                 return 0;
             default:
+                logger.log("Неверный выбор: " + command);
                 std::cout << "Неверный выбор. Попробуйте снова.\n";
                 break;
         }
