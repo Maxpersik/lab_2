@@ -58,14 +58,11 @@
 #include <cctype>
 #include <vector>
 
-// Function declarations
 std::string getCurrentDirectory();
 long numberOrDefault(const std::string& input);
 bool isNumber(const std::string& s);
-//long numberInRange(const std::string& prompt, long minValue, long maxValue);
 void displayMenu(const std::vector<std::string>& options);
 
-// Template function definition should be fully defined here
 template <typename T>
 T inputInRange(const std::string& prompt, T minValue, T maxValue) {
     T value;

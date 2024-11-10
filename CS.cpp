@@ -155,7 +155,6 @@ void CompressorStation::searchStationsByUnusedWorkshopPercentage() {
     displayStations(results);
 }
 
-// Поиск по названию
 std::vector<CompressorStation> CompressorStation::findStationsByName(const std::string& name) {
     std::vector<CompressorStation> results;
     for (const auto& [id, station] : stations) {
@@ -166,12 +165,11 @@ std::vector<CompressorStation> CompressorStation::findStationsByName(const std::
     return results;
 }
 
-// Поиск по проценту незадействованных цехов
 std::vector<CompressorStation> CompressorStation::findStationsByUnusedWorkshopPercentage(double unusedPercentage) {
     std::vector<CompressorStation> results;
     for (const auto& [id, station] : stations) {
         double actualUnusedPercentage = 100.0 * (station.workshopNumber - station.workshopNumberInWork) / station.workshopNumber;
-        if (actualUnusedPercentage == unusedPercentage) {
+        if (actualUnusedPercentage >= unusedPercentage - 5 && actualUnusedPercentage <= unusedPercentage + 5) {
             results.push_back(station);
         }
     }
@@ -182,7 +180,7 @@ void CompressorStation::searchStationsMenu() {
     logger.log("Вход в меню поиска станций.");
     std::cout << "Выберите критерий поиска:\n";
     std::cout << "1 - Поиск по названию\n";
-    std::cout << "2 - Поиск по проценту незадействованных цехов\n";
+    std::cout << "2 - Поиск по проценту незадействованных цехов(+- 5%)\n";
     int choice = inputInRange<int>("Введите номер действия: ", 1, 2);
 
     if (choice == 1) {
@@ -231,13 +229,13 @@ void CompressorStation::batchEditOrDeleteMenu() {
 
     if (choice == 1) {
         for (int stationId : selectedIds) {
-            stations[stationId].editWorkshop();  // Выполняем редактирование
+            stations[stationId].editWorkshop();
         }
         logger.log("Выбранные станции успешно отредактированы.");
         std::cout << "Выбранные станции успешно отредактированы.\n";
     } else if (choice == 2) {
         for (int stationId : selectedIds) {
-            stations.erase(stationId);  // Выполняем удаление
+            stations.erase(stationId);
         }
         logger.log("Выбранные станции успешно удалены.");
         std::cout << "Выбранные станции успешно удалены.\n";

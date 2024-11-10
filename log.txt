@@ -4,3 +4,14 @@
 2024-11-10 13:56:55 -- Вход в меню станции.
 2024-11-10 13:57:03 -- Вход в меню трубы.
 2024-11-10 13:59:44 -- Вход в меню трубы.
+2024-11-10 19:44:50 -- Сохранение данных в файл: /Users/maximgvozdev/Gubkin_main/Gubkin_3_term/Algoritmic languages/lab_2/Lab_2/data1.txt
+2024-11-10 19:50:02 -- Сохранение данных в файл: /Users/maximgvozdev/Gubkin_main/Gubkin_3_term/Algoritmic languages/Lab2/Lab_2/text.txt
+2024-11-10 19:50:23 -- Вход в меню трубы.
+2024-11-10 19:50:31 -- Показ всех труб и станций.
+2024-11-10 19:50:40 -- Сохранение данных в файл: /Users/maximgvozdev/Gubkin_main/Gubkin_3_term/Algoritmic languages/Lab2/Lab_2/data.txt
+2024-11-10 19:50:44 -- Вход в меню трубы.
+2024-11-10 19:51:00 -- Показ всех труб и станций.
+2024-11-10 19:51:06 -- Загрузка данных из файла: /Users/maximgvozdev/Gubkin_main/Gubkin_3_term/Algoritmic languages/Lab2/Lab_2/data.txt
+2024-11-10 19:51:09 -- Показ всех труб и станций.
+2024-11-10 19:58:40 -- Вход в меню станции.
+2024-11-10 20:03:04 -- Вход в меню станции.

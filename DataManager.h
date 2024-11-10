@@ -8,6 +8,7 @@
 
 class DataManager {
 public:
+    static std::string getFullPathFromCurrentDirectory();
     static void saveToFile(const std::unordered_map<int, Pipe>& pipes, const std::unordered_map<int, CompressorStation>& stations, const std::string& filename);
     static void loadFromFile(std::unordered_map<int, Pipe>& pipes, std::unordered_map<int, CompressorStation>& stations, const std::string& filename);
 };

@@ -5,11 +5,27 @@
 #include "CS.h"
 #include "DataManager.h"
 
+std::string DataManager::getFullPathFromCurrentDirectory() {
+    try {
+        std::string currentPath = std::filesystem::current_path().string();
+        
+        std::string filename;
+        std::cout << "Введите название файла: ";
+        std::getline(std::cin, filename);
+        
+        std::string fullPath = currentPath + "/" + filename;
+        
+        return fullPath;
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Ошибка при получении текущей директории: " << e.what() << std::endl;
+        return "";
+    }
+}
+
 
 void DataManager::saveToFile(const std::unordered_map<int, Pipe>& pipes, const std::unordered_map<int, CompressorStation>& stations, const std::string& filename) {
     std::ofstream outFile(filename);
     if (outFile.is_open()) {
-        // Сохраняем данные труб
         for (const auto& [id, pipe] : pipes) {
             if (!pipe.name.empty()) {
                 outFile << "PIPE" << std::endl;
@@ -21,7 +37,6 @@ void DataManager::saveToFile(const std::unordered_map<int, Pipe>& pipes, const s
             }
         }
 
-        // Сохраняем данные компрессорных станций
         for (const auto& [id, station] : stations) {
             if (!station.name.empty()) {
                 outFile << "CS" << std::endl;

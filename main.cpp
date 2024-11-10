@@ -17,7 +17,7 @@ std::vector<std::string> getMenuOptions = {
 int main() {
     std::string command;
     long value;
-    std::string filename = "/Users/maximgvozdev/Gubkin_main/Gubkin_3_term/Algoritmic languages/Lab2/Lab_2/data.txt";
+    std::string filename;
     Logger logger("/Users/maximgvozdev/Gubkin_main/Gubkin_3_term/Algoritmic languages/Lab2/Lab_2/log.txt");
 
     while (true) {
@@ -41,10 +41,12 @@ int main() {
                 Pipe::displayAll();
                 break;
             case 4:
+                filename = DataManager::getFullPathFromCurrentDirectory();
                 logger.log("Сохранение данных в файл: " + filename);
                 DataManager::saveToFile(Pipe::pipes, CompressorStation::stations, filename);
                 break;
             case 5:
+                filename = DataManager::getFullPathFromCurrentDirectory();
                 logger.log("Загрузка данных из файла: " + filename);
                 DataManager::loadFromFile(Pipe::pipes, CompressorStation::stations, filename);
                 break;

@@ -15,9 +15,6 @@ private:
     double diameter = 0;
     bool repairStatus = false;
 
-//    static int nextId;
-//    static std::unordered_map<int, Pipe> pipes;
-
 public:
     static int nextId;
     static std::unordered_map<int, Pipe> pipes;
@@ -45,7 +42,6 @@ public:
     static void displayPipes(const std::vector<Pipe>& pipes);
 
     
-    // Метод для редактирования статуса трубы по ID
     static void deletePipeMenu();
     static void editPipeById();
     static int pipeSubMenu();

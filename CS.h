@@ -16,8 +16,6 @@ private:
     int workshopNumberInWork;
     double efficiency;
 
-//    static int nextId;
-//    static std::unordered_map<int, CompressorStation> stations;
 
 public:
     static int nextId;
@@ -38,7 +36,6 @@ public:
     static void addStation();
     static void displayAll();
     
-    // Метод для редактирования станции по ID
     static void editStationById(int id);
     static std::vector<CompressorStation> findStationsByUnusedWorkshopPercentage(double unusedPercentage);
     static std::vector<CompressorStation> findStationsByName(const std::string& name);
@@ -50,7 +47,6 @@ public:
     static void searchStationsMenu();
     static void batchEditOrDeleteMenu();
 
-    // Меню для работы со станциями
     static void stationSubMenu();
     
 };
